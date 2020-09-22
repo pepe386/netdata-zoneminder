@@ -44,7 +44,7 @@ def zm_generate_refresh_token(zoneminder_url, zm_user, zm_password, connection_t
         post_data=dict()
         post_data["user"] = zm_user
         post_data["pass"] = zm_password
-        r = requests.post(zoneminder_url + '/api/host/login.json', data=post_data, timeout=connection_timeout)
+        r = requests.post(zoneminder_url + '/api/host/login.json', data=post_data, timeout=connection_timeout, verify=False)
         json_data = r.json()
         if all (k in json_data for k in ("access_token","refresh_token")):
             try: 
@@ -60,7 +60,7 @@ def zm_generate_refresh_token(zoneminder_url, zm_user, zm_password, connection_t
 
 def zm_generate_access_token(zoneminder_url, refresh_token, connection_timeout):
     try:
-        r = requests.post(zoneminder_url + '/api/host/login.json?token=' + refresh_token, timeout=connection_timeout)
+        r = requests.post(zoneminder_url + '/api/host/login.json?token=' + refresh_token, timeout=connection_timeout, verify=False)
         json_data = r.json()
         if ("access_token" in json_data):
             try:
@@ -135,7 +135,7 @@ class Service(SimpleService):
         
         #get data from monitors api call
         try:
-            r = requests.get(self.zoneminder_url + '/api/monitors.json?token=' + access_token)
+            r = requests.get(self.zoneminder_url + '/api/monitors.json?token=' + access_token, timeout=self.connection_timeout, verify=False)
             json_data = r.json()  
         except requests.exceptions.RequestException as e: 
             self.debug(e)
@@ -151,18 +151,25 @@ class Service(SimpleService):
                
         if ("monitors" in json_data):
             for i, monitor in enumerate(json_data["monitors"]):    
-                disk_space += float(monitor["Monitor"]["TotalEventDiskSpace"])           
-                if (monitor["Monitor"]["Function"] == "None" or monitor["Monitor"]["Enabled"] == "0"):
-                    continue
-                if "zm_fps_" + monitor["Monitor"]["Id"] not in self.charts['camera_fps']:
-                    self.charts['camera_fps'].add_dimension(["zm_fps_" + monitor["Monitor"]["Id"], monitor["Monitor"]["Name"], 'absolute'])
-                data["zm_fps_" + monitor["Monitor"]["Id"]] = float(monitor["Monitor_Status"]["CaptureFPS"])
-                if "zm_bandwidth_" + monitor["Monitor"]["Id"] not in self.charts['camera_bandwidth']:
-                    self.charts['camera_bandwidth'].add_dimension(["zm_bandwidth_" + monitor["Monitor"]["Id"], monitor["Monitor"]["Name"], 'absolute', None, 1024])
-                data["zm_bandwidth_" + monitor["Monitor"]["Id"]] = float(monitor["Monitor_Status"]["CaptureBandwidth"])
-                if "zm_events_" + monitor["Monitor"]["Id"] not in self.charts['events']:
-                    self.charts['events'].add_dimension(["zm_events_" + monitor["Monitor"]["Id"], monitor["Monitor"]["Name"], 'absolute'])
-                data["zm_events_" + monitor["Monitor"]["Id"]] = float(monitor["Monitor"]["TotalEvents"])
+                if ("Monitor" in monitor):
+                    try:
+                        disk_space += float(monitor["Monitor"]["TotalEventDiskSpace"])           
+                    except Exception as e:
+                        self.debug(e)
+                    if (monitor["Monitor"]["Function"] == "None" or monitor["Monitor"]["Enabled"] == "0"):
+                        continue
+                    if "zm_fps_" + monitor["Monitor"]["Id"] not in self.charts['camera_fps']:
+                        self.charts['camera_fps'].add_dimension(["zm_fps_" + monitor["Monitor"]["Id"], monitor["Monitor"]["Name"], 'absolute'])
+                    if "zm_bandwidth_" + monitor["Monitor"]["Id"] not in self.charts['camera_bandwidth']:
+                        self.charts['camera_bandwidth'].add_dimension(["zm_bandwidth_" + monitor["Monitor"]["Id"], monitor["Monitor"]["Name"], 'absolute', None, 1024])
+                    if "zm_events_" + monitor["Monitor"]["Id"] not in self.charts['events']:
+                        self.charts['events'].add_dimension(["zm_events_" + monitor["Monitor"]["Id"], monitor["Monitor"]["Name"], 'absolute'])
+                    try:
+                        data["zm_fps_" + monitor["Monitor"]["Id"]] = float(monitor["Monitor_Status"]["CaptureFPS"])
+                        data["zm_bandwidth_" + monitor["Monitor"]["Id"]] = float(monitor["Monitor_Status"]["CaptureBandwidth"])
+                        data["zm_events_" + monitor["Monitor"]["Id"]] = float(monitor["Monitor"]["TotalEvents"])
+                    except Exception as e:
+                        self.debug(e)
         else:
             self.debug("Invalid zoneminder api response: " + r.text)
             return None
