@@ -71,6 +71,10 @@ This module generates 4 netdata charts:
 1. Events of each camera
 1. Disk usage of all saved events 
 
+This is how charts look in netdata dashboard:
+![alt text](https://raw.githubusercontent.com/pepe386/netdata-zoneminder/master/pictures/zm_netdata_1.png)
+![alt text](https://raw.githubusercontent.com/pepe386/netdata-zoneminder/master/pictures/zm_netdata_2.png)
+
 ## Alarms
 Installation script by default installs 2 netdata alarms:
 1. Average FPS of last 5 minutes: by default this alarm sets "warn" level when average fps is less than 5 in the last 5 minutes, and "critical" level when average fps is less than 2 in the last 5 minutes. 
