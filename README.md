@@ -15,12 +15,12 @@ Plugin to monitor your zoneminder cameras. Includes some alarms you can use to m
 1. requests python library: https://requests.readthedocs.io/en/master/
     To install requests library run:
     ```
-    python -m pip install requests
+    sudo -H python -m pip install requests
     ```
 1. PyJWT python library: https://pyjwt.readthedocs.io/en/latest/
     To install PyJWT library run:
     ```
-    python -m pip install pyjwt
+    sudo -H python -m pip install pyjwt
     ```
 1. zoneminder: https://zoneminder.com/
     You need to make sure zoneminder's api is enabled: https://zoneminder.readthedocs.io/en/stable/api.html#enabling-api
