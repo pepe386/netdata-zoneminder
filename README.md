@@ -72,8 +72,8 @@ This module generates 4 netdata charts:
 1. Disk usage of all saved events 
 
 This is how charts look in netdata dashboard:
-![alt text](https://raw.githubusercontent.com/pepe386/netdata-zoneminder/master/pictures/zm_netdata_1.png)
-![alt text](https://raw.githubusercontent.com/pepe386/netdata-zoneminder/master/pictures/zm_netdata_2.png)
+![alt text](https://raw.githubusercontent.com/pepe386/netdata-zoneminder/master/images/zm_netdata_1.png)
+![alt text](https://raw.githubusercontent.com/pepe386/netdata-zoneminder/master/images/zm_netdata_2.png)
 
 ## Alarms
 Installation script by default installs 2 netdata alarms:
