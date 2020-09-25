@@ -1,11 +1,17 @@
-#Description: zoneminder netdata python.d module 
-#Author: Jose Chapa
-#This code is licensed under MIT license (see LICENSE.txt for details)
+# -*- coding: utf-8 -*-
+# Description: zoneminder netdata python.d module 
+# Author: Jose Chapa
+# SPDX-License-Identifier: GPL-3.0-or-later
 #Zoneminder API: https://zoneminder.readthedocs.io/en/stable/api.html
 
 import json, time, os.path
-import requests
-import jwt
+
+try:
+    import requests
+    import jwt
+    HAVE_DEPS = True
+except ImportError:
+    HAVE_DEPS = False
 
 from bases.FrameworkServices.SimpleService import SimpleService
 
@@ -86,7 +92,10 @@ class Service(SimpleService):
         self.connection_timeout = self.configuration.get("timeout", 10)
         
     def check(self):
-       return True
+        if not HAVE_DEPS:
+            self.error("'requests' and 'PyJWT' python packages are needed.")
+            return False
+        return True
 
     def _get_data(self):
         data = dict()
