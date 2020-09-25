@@ -2,7 +2,7 @@
 # Description: zoneminder netdata python.d module 
 # Author: Jose Chapa
 # SPDX-License-Identifier: GPL-3.0-or-later
-#Zoneminder API: https://zoneminder.readthedocs.io/en/stable/api.html
+# Zoneminder API: https://zoneminder.readthedocs.io/en/stable/api.html
 
 import json, time, os.path
 
