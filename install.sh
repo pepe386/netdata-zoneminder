@@ -12,7 +12,7 @@ usage()
     echo "Zoneminder netdata plugin - installation script"
     echo ""
     echo "$0"
-    echo "  -h --help"   
+    echo "  -h --help"
     echo "  --plugins-dir=path          Default python.d plugins directory: $NETDATA_PLUGINS_DIR"
     echo "  --config-dir=path           Default netdata configuration directory: $NETDATA_CONFIG_DIR"
     echo "  --without-alarms            Add this option to install only plugin (skip netdata alarms installation)"
